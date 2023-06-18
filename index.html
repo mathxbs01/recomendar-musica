@@ -1,0 +1,95 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Recomendação Música</title>
+  <style>
+    body {
+      font-family: Arial, sans-serif;
+      margin: 0;
+      padding: 20px;
+    }
+
+    .chat-container {
+      max-width: 600px;
+      margin: 0 auto;
+    }
+
+    .message {
+      background-color: #f2f2f2;
+      border-radius: 5px;
+      padding: 10px;
+      margin-bottom: 10px;
+    }
+
+    .user-message {
+      background-color: #e2f0cb;
+    }
+
+    .assistant-message {
+      background-color: #c1dceb;
+    }
+
+    .user-input {
+      width: 100%;
+      padding: 10px;
+      box-sizing: border-box;
+      margin-bottom: 10px;
+    }
+
+    .submit-button {
+      background-color: #4CAF50;
+      color: white;
+      padding: 10px 20px;
+      border: none;
+      border-radius: 5px;
+      cursor: pointer;
+    }
+
+    .submit-button:hover {
+      background-color: #45a049;
+    }
+  </style>
+</head>
+<body>
+  <div class="chat-container">
+    <!-- Add more messages as needed -->
+    <div class="message assistant-message">
+        <p id="assistant-text">Qual é o nome do artista?</p>
+    </div>
+    
+    <input type="text" class="user-input" id="user-input" placeholder="Envie sua questão">
+    <button class="submit-button" onclick="sendMessage()">Enviar</button>
+  </div>
+
+  <script>
+    function sendMessage() {
+      var userInput = document.getElementById("user-input");
+      var userQuestion = userInput.value;
+
+      // Exemplo de adicionar uma nova pergunta e resposta no chat
+      var chatContainer = document.querySelector(".chat-container");
+
+      var userMessage = document.createElement("div");
+      userMessage.classList.add("message", "user-message");
+      userMessage.innerHTML = "<p>" + userQuestion + "</p>";
+      chatContainer.insertBefore(userMessage, userInput);
+
+      var assistantMessage = document.createElement("div");
+      assistantMessage.classList.add("message", "assistant-message");
+      assistantMessage.innerHTML = "<p>Não foi possível encontrar. Tente novamente.</p>";
+      chatContainer.insertBefore(assistantMessage, userInput);
+
+      // Limpar o campo de entrada de texto após enviar a pergunta
+      userInput.value = "";
+    }
+    window.addEventListener('load', function() {
+      var assistantText = document.getElementById("assistant-text");
+      assistantText.textContent = "Qual é o nome do artista?";
+    });
+
+
+  </script>
+</body>
+</html>
