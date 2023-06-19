@@ -3,7 +3,7 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Recomendação Música</title>
+  <title>Recomendação de Música</title>
   <style>
     body {
       font-family: Arial, sans-serif;
@@ -54,12 +54,11 @@
 </head>
 <body>
   <div class="chat-container">
-    <!-- Add more messages as needed -->
     <div class="message assistant-message">
-        <p id="assistant-text">Qual é o nome do artista?</p>
+      <p id="assistant-text">Qual é o nome do artista?</p>
     </div>
     
-    <input type="text" class="user-input" id="user-input" placeholder="Envie sua questão">
+    <input type="text" class="user-input" id="user-input" placeholder="Envie sua pergunta">
     <button class="submit-button" onclick="sendMessage()">Enviar</button>
   </div>
 
@@ -68,28 +67,41 @@
       var userInput = document.getElementById("user-input");
       var userQuestion = userInput.value;
 
-      // Exemplo de adicionar uma nova pergunta e resposta no chat
-      var chatContainer = document.querySelector(".chat-container");
+      // Enviar a pergunta do usuário para o servidor Flask
+      fetch('/send_message', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/x-www-form-urlencoded'
+        },
+        body: 'user_question=' + encodeURIComponent(userQuestion)
+      })
+      .then(response => response.json())
+      .then(data => {
+        // Exibir a resposta no chat
+        var chatContainer = document.querySelector(".chat-container");
 
-      var userMessage = document.createElement("div");
-      userMessage.classList.add("message", "user-message");
-      userMessage.innerHTML = "<p>" + userQuestion + "</p>";
-      chatContainer.insertBefore(userMessage, userInput);
+        var userMessage = document.createElement("div");
+        userMessage.classList.add("message", "user-message");
+        userMessage.innerHTML = "<p>" + userQuestion + "</p>";
+        chatContainer.insertBefore(userMessage, userInput);
 
-      var assistantMessage = document.createElement("div");
-      assistantMessage.classList.add("message", "assistant-message");
-      assistantMessage.innerHTML = "<p>Não foi possível encontrar. Tente novamente.</p>";
-      chatContainer.insertBefore(assistantMessage, userInput);
+        var assistantMessage = document.createElement("div");
+        assistantMessage.classList.add("message", "assistant-message");
+        assistantMessage.innerHTML = "<p>" + data.response + "</p>";
+        chatContainer.insertBefore(assistantMessage, userInput);
+      })
+      .catch(error => {
+        console.error('Erro:', error);
+      });
 
       // Limpar o campo de entrada de texto após enviar a pergunta
       userInput.value = "";
     }
+
     window.addEventListener('load', function() {
       var assistantText = document.getElementById("assistant-text");
       assistantText.textContent = "Qual é o nome do artista?";
     });
-
-
   </script>
 </body>
 </html>

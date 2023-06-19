@@ -2,6 +2,14 @@ import random
 from inserir import inserir_planilha
 from refinar_busca import refinar_busca
 from buscar_yt import buscar_link_youtube
+from fastapi import FastAPI
+from fastapi import Form
+from fastapi.responses import JSONResponse
+from fastapi.responses import HTMLResponse
+
+app = FastAPI()
+artista = None  # Variável para armazenar o nome do artista
+
 
 caminho_arquivo = 'fixtures/dados_musicas.csv'
 
@@ -76,4 +84,34 @@ def ler_arquivo_csv(caminho_arquivo):
             else:
                 print("Não foi possível encontrar. Tente novamente.")
 
+@app.get("/", response_class=HTMLResponse)
+def read_root():
+    with open("index.html", "r") as file:
+        content = file.read()
+    return content
+
+@app.post('/send_message')
+async def send_message(user_question: str = Form(...), user_response: str = Form(...)):
+    global artista  # Acesso à variável global artista
+
+    # Lógica para processar a pergunta do usuário e obter a resposta
+    if user_question == "Qual é o nome do artista?":
+        artista = user_response  # Captura a resposta do usuário como o nome do artista
+
+        response = "Qual é o nome da música?"
+    elif user_question == "Qual é o nome da música?":
+        musica = user_response  # Captura a resposta do usuário como o nome da música
+
+        # Aqui você pode realizar qualquer lógica necessária com a variável "musica"
+
+        response = f"A música '{musica}' é ótima!"
+    else:
+        response = "Desculpe, não entendi a pergunta."  # Resposta padrão para perguntas não reconhecidas
+
+    return {'response': response, 'musica': musica}
+
+if __name__ == '__main__':
+    import uvicorn
+    uvicorn.run(app, host='0.0.0.0', port=8000)
+    
 ler_arquivo_csv(caminho_arquivo)
